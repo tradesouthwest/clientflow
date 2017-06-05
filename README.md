@@ -1,22 +1,7 @@
 # clientflow
 Plugin shortcode Form will hold information that can be used to aquire basic website building strategies
 
-Plugin Name: ClientFlow
-
-Plugin URI: http://themes.tradesouthwest.com/wordpress/plugins/client
-
-Description: Form from custom post type to handle new website client information.
-
-Version: 0.1.0
-
-Author: tradesouthwest
-
 Author URI: http://tradesouthwest.com/
-
-License: GPLv3
-
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
-
 
 == Description ==
 Creates a form which can be inserted on any page using shortcode. Form will hold information that can be used
