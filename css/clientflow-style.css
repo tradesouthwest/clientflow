@@ -20,13 +20,13 @@
 #clientflow-form p:after,
 .clflrow:before,
 .clflrow:after {
-    display: table;
+  display: table;
   content: " ";
 }
 #clientflow-form textarea:after,
 #clientflow-form p:after,
 .clflrow:after {
-    clear:both;
+  clear:both;
 }
 .clflrow{
     width: 100%;
@@ -41,58 +41,55 @@
     margin-bottom: 15px;
 }
 #clientflow-form {
-max-width: 100%;
-margin: 0 auto;
-position:relative;
-
+  max-width: 100%;
+  margin: 0 auto;
+  position:relative;
 }
 #clientflow-form span.req {
-color: red;
+  color: red;
 }
 #clientflow-form p {
-min-height: 1em;
-padding: 0;
-display: block;
-
+  min-height: 1em;
+  padding: 0;
+  display: block;
 }
 #clientflow-form label {
-text-align: left;
-width: 100%;
-display:block;
-margin: 0;
-padding: 0;
-position: relative;
-padding-top: 4px;
-border-top: thin solid #ddd;
+  text-align: left;
+  width: 100%;
+  display:block;
+  margin: 12px auto -12px 0;
+  padding: 0;
+  position: relative;
+  padding-top: 4px;
+  border-top: thin solid #ddd;
 }
 #clientflow-form p input[type="text"],
 #clientflow-form p input[type="email"],
 #clientflow-form p input[type="url"],
 #clientflow-form p input[type="tel"],
 #clientflow-form p input[type="number"] {
-display: block;
+  display: block;
   width: 100%;
   min-height: 34px;
-  padding: 6px 12px;
+  padding: 3px 6px;
   font-size: 14px;
   line-height: 1.42857143;
   color: #555;
   background-color: #fff;
   background-image: none;
   border: 1px solid #ccc;
-color: inherit;
-line-height: 34px; margin-bottom: 15px;
-border-radius: none;
-font: inherit;
   color: inherit;
-
+  line-height: 34px; margin-bottom: 15px;
+  border-radius: none;
+  font: inherit;
+  color: inherit;
+  margin-top: 0;
 }
 #clientflow-form radio {
-
-margin: 0 15px;
+  margin: 0 15px;
 }
 #clientflow-form select {
-display: block;
+  display: block;
   width: 100%;
   height: auto;
   min-height: 34px;
@@ -103,16 +100,16 @@ display: block;
   background-color: #fff;
   background-image: none;
   border: 1px solid #ccc;
-color: inherit;
-line-height: 34px;
-margin-bottom: 15px;
-border-radius: none;
+  color: inherit;
+  line-height: 34px;
+  margin-bottom: 15px;
+  border-radius: none;
   font: inherit;
   color: inherit;
 
 }
 #clientflow-form textarea {
-display: block;
+  display: block;
   width: 100%;
   height: auto;
   min-height: 34px;
@@ -123,27 +120,10 @@ display: block;
   background-color: #fff;
   background-image: none;
   border: 1px solid #ccc;
-color: inherit;
-line-height: 34px;
-margin-bottom: 15px;
-border-radius: none;
-font: inherit;
   color: inherit;
-  }
-.successModal {
-display: block;
-position: fixed;
-top: 45%;
-left: 25%;
-width: 300px;
-height: auto;
-padding: 5px 20px;
-border: 3px solid green;
-background-color: #EFE;
-z-index:1002;
-overflow: auto;
--moz-border-radius: 15px;
--webkit-border-radius: 15px;
--moz-box-shadow: 5px 5px 10px #cfcfcf;
--webkit-box-shadow: 5px 5px 10px #cfcfcf;
+  line-height: 34px;
+  margin-bottom: 15px;
+  border-radius: none;
+  font: inherit;
+  color: inherit;
 }
