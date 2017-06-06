@@ -20,7 +20,7 @@ function clfl_formsettings_init(  ) {
         'pluginPage',
         'clfl_pluginPage_section'
     );
-
+/** not using options API since form is POST only 
     add_settings_field(
         'clfl_text_field_2',
         __( 'Settings field description', 'clientflow' ),
@@ -163,7 +163,7 @@ function clfl_formsettings_init(  ) {
         'pluginPage',
         'clfl_pluginPage_section'
     );
-
+*/
 }
 add_action( 'admin_init', 'clfl_formsettings_init' );
 
@@ -172,9 +172,14 @@ add_action( 'admin_init', 'clfl_formsettings_init' );
 function clientflow_shortcode_wrapper_callback()
 {
 
-if( isset( $_POST['clientflow-submitted'] )) { clientflow_sendmail_formprocess(); }
-else {
-
+    if( isset( $_POST['clientflow-submitted'] ))
+    {
+    $nonce = $_REQUEST['clientflow_verify'];
+    if ( ! wp_verify_nonce( $nonce, 'clientflow_nonce' ) ) {
+       die ( 'Security check' ); }
+    clientflow_sendmail_formprocess(); }
+    else
+    {
 /**Doing the form
  * client_name-a, client_email-b, refers-7,  messagex-4, domainx-2, urls-5,  hosts-6, timeframe-3, password-8,
  * radio1-9-live-site, 10-new-site, radio2-11-no-theme, 12-have-theme, themename-15, webtype-13, webcat-14,
@@ -182,8 +187,8 @@ else {
  */
 ?>
 <div class="clientflowwrap">
-<header><h3><?php esc_attr_e( clfl_formsettings_formheader() ); ?></h3></header>
-
+<header><h3><?php $option = get_option( 'clfl_settings' );
+        esc_attr_e(  $option['clfl_text_field_1'] ); ?></h3></header>
 
     <form id="clientflow-form" method="post" class="form" action="">
         <section class="inner-form">
@@ -273,11 +278,12 @@ else {
     <p><label for="pages"><i class="fa fa-chain-broken"></i>8. What pages need work? <small>list all separated by spaces. If this is a large project then skip.</small></label></p>
     <p><input type='text' name='clfl_text_field_19'></p>
 
-    <?php wp_nonce_field('add_transfer','clientflow_nonce_field'); ?>
+    <input type="hidden" name="clientflow_verify" value="<?php echo wp_create_nonce( 'clientflow_nonce' ); ?>">
     <input name="action" value="add_transfer" type="hidden">
     <input type="hidden" name="clientflow-fauxnonce" value="12345">
     <input type="submit" class="button-primary" name="clientflow-submitted" value="Save and Send"></form>
-    </div><p><?php esc_attr_e( clfl_formsettings_adminemail() ); ?></p>
+    </div><p><?php  $option = get_option( 'clfl_settings' );
+    esc_attr_e( $option['clfl_text_field_0'] ); ?></p>
 
 <?php
     }
