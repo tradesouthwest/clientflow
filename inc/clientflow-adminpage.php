@@ -22,8 +22,15 @@ function clfl_settings_init(  ) {
     );
     add_settings_field(
         'clfl_text_field_0',
-        __( 'Email Address to Send Form Copy to', 'clientflow' ),
+        __( 'Email Address to Send Form Copy to.', 'clientflow' ),
         'clfl_text_field_0_render',
+        'adminPage',
+        'clfl_adminPage_section'
+    );
+    add_settings_field(
+        'clfl_webmail_from',
+        __( 'Email Address to Show in From Field of Received Emails.', 'clientflow' ),
+        'clfl_webmail_from_render',
         'adminPage',
         'clfl_adminPage_section'
     );
@@ -31,13 +38,6 @@ function clfl_settings_init(  ) {
         'clfl_text_field_1',
         __( 'Title of Form', 'clientflow' ),
         'clfl_text_field_1_render',
-        'adminPage',
-        'clfl_adminPage_section'
-    );
-    add_settings_field(
-        'clfl_webmail_from',
-        __( 'Email Address to Show in From Field of Received Emails', 'clientflow' ),
-        'clfl_webmail_from_render',
         'adminPage',
         'clfl_adminPage_section'
     );
@@ -111,14 +111,21 @@ function clfl_options_page() {
 }
 
 //Safe way to get options inside of our mail routine.
+/*
 function clfl_formsettings_formheader() {
     $option = get_option( 'clfl_settings' );
         return $option[clfl_text_field_1];
 }
-function clfl_formsettings_adminemail() {
+function clfl_formsettings_admin_email() {
+
     $option = get_option( 'clfl_settings' );
         return $option[clfl_text_field_0];
 }
+function clfl_formsettings_webmailfrom() {
+    $option = get_option( 'clfl_settings' );
+        return $option[clfl_webmail_from];
+}
+*/
 
 /**
  * custom post type to handle form retrieval
@@ -205,36 +212,24 @@ add_action( 'init', 'clientflow_register_custom_taxonomies' );
 
 
 //set wp_mail for HTML
-if( ! function_exists( 'clientflow_set_html_mail_content_type' ) ) :
+if( ! function_exists( 'clientflow_set_html_mail_content_type' ) ) : 
 function clientflow_set_html_mail_content_type() {
     return 'text/html';
 }
 endif;
 
-function clientflow_wp_mail_from( $original_email_address ) {
-    $options = get_option( 'clfl_settings' );
-    $admin_email = $options[clfl_text_field_0];
-    //Make sure the email is from the same domain
-    //as your website to avoid being marked as spam.
-    return $admin_email;
-}
-
-
-//remove_action("wp_ajax_nopriv_clientflow_nonce_action", "clientflow_sendmail_formprocess");
-//remove_action("wp_ajax_clientflow_nonce_action", "clientflow_sendmail_formprocess");
-//remove_action( 'init', 'clientflow_sendmail_formprocess' );
+//form processor
 function clientflow_sendmail_formprocess()
 {
     if ( $_POST['action'] && $_POST['action'] == 'add_transfer' )
     {
-    // ERROR or SUCCESS messages
-    $notice = __( 'Would you please try again. There seems to be trouble with sending this form.', 'clientflow' );
-    $message = __( 'Your requests went through.', 'clientflow' );
+        $date_of = date('m-d-Y H:i:s');
 
-    $date_of = date('m-d-Y');
         $options = get_option( 'clfl_settings' );
-        $admin_email = $options[clfl_text_field_0];
-	$webmail_from = $options[clfl_webmail_from];
+        //set string to options values
+        $webmail_from = $options['clfl_webmail_from'];
+        $clfl_admin_email = $options['clfl_text_field_0'];
+        $clientflow_title = $options['clfl_text_field_1'];
 
     /**Get the info from the form.
      * Reference order of fields as follows:
@@ -242,39 +237,73 @@ function clientflow_sendmail_formprocess()
      * timeframe-3, password-8, radio1-9-live-site, 10-new-site, radio2-11-no-theme, 12-have-theme,
      * themename-15, webtype-13, webcat-14, uiux-16, brand-17, custz-18, pages-19
      */
-    if(trim($_POST['clfl_text_field_a']) === '') {
-        $nameError = 'Please enter your name.';
-        $hasError = true;
-    } else {
-        $clfl_text_field_a = trim($_POST['clfl_text_field_a']);
-        }
-    $clfl_text_field_b      = filter_var( $_POST['clfl_text_field_b'], FILTER_SANITIZE_EMAIL );
-    $clfl_text_field_2      = sanitize_text_field( $_POST['clfl_text_field_2'] );
-    $clfl_text_field_3      = sanitize_text_field( $_POST['clfl_text_field_3'] );
-    $clfl_textarea_field_4  = sanitize_text_field( $_POST['clfl_textarea_field_4']);
-    $clfl_text_field_5      = sanitize_text_field( $_POST['clfl_text_field_5'] );
-    $clfl_text_field_6      = sanitize_text_field( $_POST['clfl_text_field_6'] );
-    $clfl_text_field_7      = sanitize_text_field( $_POST['clfl_text_field_7'] );
-    $clfl_text_field_8      = sanitize_text_field( $_POST['clfl_text_field_8'] );
+         //start clean
+        $clfl_text_field_a = '';
+        $clfl_text_field_b = '';
+        $clfl_text_field_2 = '';
+        $clfl_text_field_3 = '';
+        $clfl_textarea_field_4 = '';
+        $clfl_text_field_5 = '';
+        $clfl_text_field_6 = '';
+        $clfl_text_field_7 = '';
+        $clfl_text_field_8 = '';
+        $clfl_radio_field_9 = '';
+        $clfl_radio_field_10 = '';
+        $clfl_radio_field_11 = '';
+        $clfl_radio_field_12 = '';
+        $clfl_select_field_13 = '';
+        $clfl_select_field_14 = '';
+        $clfl_text_field_15 = '';
+        $clfl_text_field_16 = '';
+        $clfl_text_field_17 = '';
+        $clfl_text_field_18 = '';
+        $clfl_text_field_19 = '';
 
-    $clfl_radio_field_9     = sanitize_text_field( $_POST['clfl_radio_field_9'] );
-    $clfl_radio_field_10    = sanitize_text_field( $_POST['clfl_radio_field_10'] );
-    $clfl_radio_field_11    = sanitize_text_field( $_POST['clfl_radio_field_11'] );
-    $clfl_radio_field_12    = sanitize_text_field( $_POST['clfl_radio_field_12'] );
+    if( !empty( $_POST['clfl_text_field_a'] ) ) $clfl_text_field_a
+                                 = trim( $_POST['clfl_text_field_a'] );
+    if( !empty( $_POST['clfl_text_field_b'] ) ) $clfl_text_field_b
+                           = filter_var( $_POST['clfl_text_field_b'], FILTER_SANITIZE_EMAIL );
+    if( !empty( $_POST['clfl_text_field_2'] ) ) $clfl_text_field_2
+                  = sanitize_text_field( $_POST['clfl_text_field_2'] );
+    if( !empty( $_POST['clfl_text_field_3'] ) ) $clfl_text_field_3
+                  = sanitize_text_field( $_POST['clfl_text_field_3'] );
+    if( !empty( $_POST['clfl_textarea_field_4'] ) ) $clfl_textarea_field_4
+                      = sanitize_text_field( $_POST['clfl_textarea_field_4']);
+    if( !empty( $_POST['clfl_text_field_5'] ) ) $clfl_text_field_5
+                  = sanitize_text_field( $_POST['clfl_text_field_5'] );
+    if( !empty( $_POST['clfl_text_field_6'] ) ) $clfl_text_field_6
+                  = sanitize_text_field( $_POST['clfl_text_field_6'] );
+    if( !empty( $_POST['clfl_text_field_7'] ) ) $clfl_text_field_7
+                  = sanitize_text_field( $_POST['clfl_text_field_7'] );
+    if( !empty( $_POST['clfl_text_field_8'] ) ) $clfl_text_field_8
+                  = sanitize_text_field( $_POST['clfl_text_field_8'] );
 
-    $clfl_select_field_13   = sanitize_text_field( $_POST['clfl_select_field_13'] );
-    $clfl_select_field_14   = sanitize_text_field( $_POST['clfl_select_field_14'] );
-    $clfl_text_field_15     = sanitize_text_field( $_POST['clfl_text_field_15'] );
-    $clfl_text_field_16     = sanitize_text_field( $_POST['clfl_text_field_16'] );
-    $clfl_text_field_17     = sanitize_text_field( $_POST['clfl_text_field_17'] );
-    $clfl_text_field_18     = sanitize_text_field( $_POST['clfl_text_field_18'] );
-    $clfl_text_field_19     = sanitize_text_field( $_POST['clfl_text_field_19'] );
+    if( !empty( $_POST['clfl_radio_field_9'] ) ) $clfl_radio_field_9
+                                        = $_POST['clfl_radio_field_9'];
+    if( !empty( $_POST['clfl_radio_field_10'] ) ) $clfl_radio_field_10
+                                         = $_POST['clfl_radio_field_10'];
+    if( !empty( $_POST['clfl_radio_field_11'] ) ) $clfl_radio_field_11
+                                         = $_POST['clfl_radio_field_11'];
+    if( !empty( $_POST['clfl_radio_field_12'] ) ) $clfl_radio_field_12
+                                         = $_POST['clfl_radio_field_12'];
 
-    //add mail type and then change From: header
-    add_filter( 'wp_mail_content_type', 'clientflow_set_html_mail_content_type' );
-    add_filter( 'wp_mail_from', 'clientflow_wp_mail_from');
-	    
-       /** wp_mail
+    if( !empty( $_POST['clfl_select_field_13'] ) ) $clfl_select_field_13
+                                        =   $_POST['clfl_select_field_13'];
+    if( !empty( $_POST['clfl_select_field_14'] ) ) $clfl_select_field_14
+                                        =   $_POST['clfl_select_field_14'];
+
+    if( !empty( $_POST['clfl_text_field_15'] ) ) $clfl_text_field_15
+                   = sanitize_text_field( $_POST['clfl_text_field_15'] );
+    if( !empty( $_POST['clfl_text_field_16'] ) ) $clfl_text_field_16
+                   = sanitize_text_field( $_POST['clfl_text_field_16'] );
+    if( !empty( $_POST['clfl_text_field_17'] ) ) $clfl_text_field_17
+                   = sanitize_text_field( $_POST['clfl_text_field_17'] );
+    if( !empty( $_POST['clfl_text_field_18'] ) ) $clfl_text_field_18
+                   = sanitize_text_field( $_POST['clfl_text_field_18'] );
+    if( !empty( $_POST['clfl_text_field_19'] ) ) $clfl_text_field_19
+                   = sanitize_text_field( $_POST['clfl_text_field_19'] );
+
+   /** wp_mail
      * @param string|array $to Array or comma-separated list of email addresses to send message.
      * @param string $subject Email subject
      * @param string $message Message contents
@@ -283,17 +312,16 @@ function clientflow_sendmail_formprocess()
      * @return bool Whether the email contents were sent successfully.
      */
 
-    $sendto = array( $clfl_text_field_b, $admin_email  );
-    $headers = array(
-    'Reply-To' => $admin_email . "<websiteform@fromus.net>",
-    'From' => $webmail_from,
-    'Cc' => $clfl_text_field_b . "<websiteform@fromyou.net>"
-    );
-    $sentSuccess =
-        wp_mail(
-            $sendto,
-            "Request From $clfl_text_field_b",
-            "This is the message from Website Project
+    //add mail type in headers
+    add_filter( 'wp_mail_content_type', 'clientflow_set_html_mail_content_type' );
+
+    $sendto = $clfl_admin_email . " <".$clfl_admin_email.">";
+    $headers = '';
+    $headers .= 'Cc:' . $clfl_text_field_a . ' <'.$clfl_text_field_b.'>'. "\n";
+    $headers .= 'From:' . $clientflow_title . ' <'.$webmail_from.'>'. "\n";
+    $headers .= $headers;
+    $sendSuccess = wp_mail( $sendto, "Request From $clfl_text_field_b",
+    "<html><body>
     <br>
     <table><tbody>
     <tr>
@@ -307,7 +335,7 @@ function clientflow_sendmail_formprocess()
     <td><span>dev url </span>    $clfl_text_field_5 </td>
     <td><span>host </span>        $clfl_text_field_6  </td>
     <td><span>timeframe </span>    $clfl_text_field_3 </td>
-    <td><span>visitor exper: </span>$clfl_text_field_16  </td></tr>
+    <td><span>visitor exper: </span> $clfl_text_field_16  </td></tr>
     <tr>
     <td><span>branding: </span>  $clfl_text_field_17 </td>
     <td><span>customize: </span>$clfl_text_field_18 </td>
@@ -318,36 +346,35 @@ function clientflow_sendmail_formprocess()
     <td><span>live or new: </span> $clfl_radio_field_9 $clfl_radio_field_10</td>
     <td>has theme?: $clfl_radio_field_11 $clfl_radio_field_12 </td>
     <td>theme:     $clfl_text_field_15</td></tr></tbody></table>
-    <br>Date: $date_of",
-            "$headers"
-        );
+    <br>$date_of <br></body></html>",
+    $headers
+    );
 
-        if ( $sentSuccess )
-        {
-        // wp_redirect( get_permalink( $post ) );
+    if ( $sendSuccess ) {
         ?>
 
-        <div class="clflrow">
-            <h2><?php _e('Your Information Was Sent Successfully. Please check your email', 'clientflow'); ?></h2>
-            <div id="message" class="updated"><p><?php echo $message; ?></p></div>
-        </div>
 
-        <?php
-        } else {
-        ?>
+            <div class="clflrow">
+            <h4><?php esc_html_e('Your Information Was Sent Successfully.', 'clientflow' ); ?></h4>
+            <p><?php esc_html_e( 'Please check your email', 'clientflow' ); ?></p>
+            <p><?php //print($clfl_text_field_b); ?></p>
+            </div>
 
-        <div class="clflrow">
+            <?php
+            } else {
+            ?>
+
+            <div class="clflrow">
             <h2><?php _e('Your Information was invalid. Please re-validate.', 'clientflow' ); ?></h2>
-            <div id="notice" class="error"><p><?php echo $notice; ?></p></div>
-        </div>
+            <p><?php //echo $nameError; ?></p>
+            </div>
 
-        <?php
-        }
-    //if( $hasError == true )  echo esc_attr( $nameError $emailError );
+            <?php
+            }
+        // Reset content-type to avoid conflicts -- https://core.trac.wordpress.org/ticket/23578
+        remove_filter( 'wp_mail_content_type', 'clientflow_set_html_mail_content_type' );
+
+         // ends if post[action]
     }
-    // Reset content-type to avoid conflicts -- https://core.trac.wordpress.org/ticket/23578
-    remove_filter( 'wp_mail_content_type', 'clientflow_set_html_mail_content_type' );
-    remove_filter( 'wp_mail_from', 'clientflow_wp_mail_from' );
 }
-
 ?>
