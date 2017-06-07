@@ -222,11 +222,12 @@ function clientflow_shortcode_wrapper_callback()
     </div>
 
     <p><label for="radio1info"><i class="fa fa-info-circle"></i> 1. Is this a refactoring of an existing site?</label></p>
-    <p><input type='radio' name='clfl_radio_field_9' <?php checked( 'clfl_radio_field_9', 'live-site' );  ?> value='live-site'><span>Yes</span>
-    <input type='radio'    name='clfl_radio_field_10' <?php checked( 'clfl_radio_field_10', 'new-site' ); ?>    value='new-site'><span>No - Site is new</span></p>
+    <p><input type='radio' name='clfl_radio_field_9[]' <?php checked( 'clfl_radio_field_9', 'live-site' );  ?> value='live-site'><span>Yes</span>
+    <input type='radio'    name='clfl_radio_field_9[]' <?php checked( 'clfl_radio_field_10', 'new-site' ); ?>    value='new-site'><span>No - Site is new</span></p>
     <p><label for="havetheme"><i class="fa fa-info-circle"></i> 2. Are you using an existing theme or do you need help selecting one?</label></p><p>
-    <input type='radio'    name='clfl_radio_field_11' <?php checked( 'clfl_radio_field_11', 'no-theme' ); ?>    value='no-theme'><span>No Theme Yet</span>
-    <input type='radio'    name='clfl_radio_field_12' <?php checked( 'clfl_radio_field_12', 'have-theme' ); ?>  value='have-theme'><span>Have Theme</p>
+    <input type='radio'    name='clfl_radio_field_11[]' <?php checked( 'clfl_radio_field_11', 'no-theme' ); ?>    value='no-theme'><span>No Theme Yet</span>
+    <input type='radio'    name='clfl_radio_field_11[]' <?php checked( 'clfl_radio_field_12', 'have-theme' ); ?>  value='have-theme'><span>Have Theme</p>
+    
     <p><label for="themename"> theme name</label></p><p>
     <input type='text'     name='clfl_text_fields_15'></p>
     <p><label for="select1"><i class="fa fa-info-circle"></i> 3. Type of Website?</label></p>
