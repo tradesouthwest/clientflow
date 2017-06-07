@@ -315,45 +315,58 @@ function clientflow_sendmail_formprocess()
     //add mail type in headers
     add_filter( 'wp_mail_content_type', 'clientflow_set_html_mail_content_type' );
 
-    $sendto = $clfl_admin_email . " <".$clfl_admin_email.">";
+    $to = $clfl_admin_email . ' <'.$clfl_admin_email.'>';
+
     $headers = '';
     $headers .= 'Cc:' . $clfl_text_field_a . ' <'.$clfl_text_field_b.'>'. "\n";
     $headers .= 'From:' . $clientflow_title . ' <'.$webmail_from.'>'. "\n";
     $headers .= $headers;
-    $sendSuccess = wp_mail( $sendto, "Request From $clfl_text_field_b",
-    "<html><body>
-    <br>
-    <table><tbody>
-    <tr>
-    <td><span>name: </span> $clfl_text_field_a</td>
-    <td><span>email: </span> $clfl_text_field_b</td>
-    <td><span>domain: </span> $clfl_text_field_2 </td>
-    <td><span>referred: </span>$clfl_text_field_7 </td></tr>
-    <tr>
-    <td colspan=\"4\">$clfl_textarea_field_4 </td></tr>
-    <tr>
-    <td><span>dev url </span>    $clfl_text_field_5 </td>
-    <td><span>host </span>        $clfl_text_field_6  </td>
-    <td><span>timeframe </span>    $clfl_text_field_3 </td>
-    <td><span>visitor exper: </span> $clfl_text_field_16  </td></tr>
-    <tr>
-    <td><span>branding: </span>  $clfl_text_field_17 </td>
-    <td><span>customize: </span>$clfl_text_field_18 </td>
-    <td><span>pages: </span>   $clfl_text_field_19  </td>
-    <td><span>type: </span>   $clfl_select_field_13</td></tr>
-    <tr>
-    <td><span>category: </span>   $clfl_select_field_14</td>
-    <td><span>live or new: </span> $clfl_radio_field_9 $clfl_radio_field_10</td>
-    <td>has theme?: $clfl_radio_field_11 $clfl_radio_field_12 </td>
-    <td>theme:     $clfl_text_field_15</td></tr></tbody></table>
-    <br>$date_of <br></body></html>",
-    $headers
-    );
+
+    $subject= trim($clientflow_title);
+    $content = "<html><body><br><table><tbody><tr><td><span>name: </span>";
+    $content .= $clfl_text_field_a;
+    $content .= "</td><td><span>email: </span>";
+    $content .= $clfl_text_field_b;
+    $content .= "</td><td><span>domain: </span>";
+    $content .= $clfl_text_field_2;
+    $content .= "</td><td><span>referred: </span>";
+    $content .= $clfl_text_field_7;
+    $content .= "</td></tr><tr><td colspan=\"4\">";
+    $content .= $clfl_textarea_field_4;
+    $content .= "</td></tr><tr><td><span>dev url </span>";
+    $content .= $clfl_text_field_5;
+    $content .= "</td><td><span>host </span>";
+    $content .= $clfl_text_field_6;
+    $content .= "</td><td><span>timeframe </span>";
+    $content .= $clfl_text_field_3;
+    $content .= "</td><td><span>visitor exper: </span>";
+    $content .= $clfl_text_field_16;
+    $content .= "</td></tr><tr><td><span>branding: </span>";
+    $content .= $clfl_text_field_17;
+    $content .= "</td><td><span>customize: </span>";
+    $content .= $clfl_text_field_18;
+    $content .= "</td><td><span>pages: </span>";
+    $content .= $clfl_text_field_19;
+    $content .= "</td><td><span>type: </span>";
+    $content .= $clfl_select_field_13;
+    $content .= "</td></tr><tr><td><span>category: </span>";
+    $content .= $clfl_select_field_14;
+    $content .= "</td><td><span>live or new: </span>";
+    $content .= $clfl_radio_field_9;
+    $content .= $clfl_radio_field_10;
+    $content .= "</td><td>has theme?: ";
+    $content .= $clfl_radio_field_11;
+    $content .= $clfl_radio_field_12;
+    $content .= "</td><td>theme:  ";
+    $content .= $clfl_text_field_15;
+    $content .= "</td></tr></tbody></table><br>";
+    $content .= $date_of;
+    $content .= "<br></body></html>";
+
+    $sendSuccess = wp_mail( $to, $subject, $content, $headers, '' );
 
     if ( $sendSuccess ) {
         ?>
-
-
             <div class="clflrow">
             <h4><?php esc_html_e('Your Information Was Sent Successfully.', 'clientflow' ); ?></h4>
             <p><?php esc_html_e( 'Please check your email', 'clientflow' ); ?></p>
