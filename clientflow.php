@@ -59,9 +59,9 @@ add_action('plugins_loaded', 'clientflow_loadtranslations');
  */
 function clientflow_scripts() {
 
-   // Register Scripts - note: v 0.1.0 not using ajax but script can be used for validate
+   /* Register Scripts - note: v 0.1.0 not using ajax but script can be used for validate
     wp_register_script( 'clientflow', plugins_url(
-                        'js/clientflow.js', __FILE__ ), array( 'jquery' ), true );
+                        'js/clientflow.js', __FILE__ ), array( 'jquery' ), true ); */
     // Register Styles
     wp_register_style( 'clientflow-style', CLFL_FORMS_URL . 'css/clientflow-style.css' );
 
