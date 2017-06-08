@@ -279,13 +279,9 @@ function clientflow_sendmail_formprocess()
                   = sanitize_text_field( $_POST['clfl_text_field_8'] );
 
     if( !empty( $_POST['clfl_radio_field_9'] ) ) $clfl_radio_field_9
-                                        = $_POST['clfl_radio_field_9'];
-    if( !empty( $_POST['clfl_radio_field_10'] ) ) $clfl_radio_field_10
-                                         = $_POST['clfl_radio_field_10'];
+                  = sanitize_text_field( $_POST['clfl_radio_field_9'] );
     if( !empty( $_POST['clfl_radio_field_11'] ) ) $clfl_radio_field_11
-                                         = $_POST['clfl_radio_field_11'];
-    if( !empty( $_POST['clfl_radio_field_12'] ) ) $clfl_radio_field_12
-                                         = $_POST['clfl_radio_field_12'];
+                  =  sanitize_text_field( $_POST['clfl_radio_field_11'] );
 
     if( !empty( $_POST['clfl_select_field_13'] ) ) $clfl_select_field_13
                                         =   $_POST['clfl_select_field_13'];
@@ -315,15 +311,12 @@ function clientflow_sendmail_formprocess()
     //add mail type in headers
     add_filter( 'wp_mail_content_type', 'clientflow_set_html_mail_content_type' );
 
-    $to = $clfl_admin_email . ' <'.$clfl_admin_email.'>';
-
-    $headers = '';
-    $headers .= 'Cc:' . $clfl_text_field_a . ' <'.$clfl_text_field_b.'>'. "\n";
+    $to = array( $clfl_text_field_b, $clfl_admin_email  );
+	    
     $headers .= 'From:' . $clientflow_title . ' <'.$webmail_from.'>'. "\n";
-    $headers .= $headers;
 
-    $subject= trim($clientflow_title);
-    $content = "<html><body><br><table><tbody><tr><td><span>name: </span>";
+    $content = "<html><body style=\"font-family: sans-serif\"><br><table style=\"border: 1px solid #ddd\">
+                <tbody style=\"padding: 3px\"><tr><td><span>name: </span>";
     $content .= $clfl_text_field_a;
     $content .= "</td><td><span>email: </span>";
     $content .= $clfl_text_field_b;
@@ -363,7 +356,7 @@ function clientflow_sendmail_formprocess()
     $content .= $date_of;
     $content .= "<br></body></html>";
 
-    $sendSuccess = wp_mail( $to, $subject, $content, $headers, '' );
+    $sendSuccess = wp_mail( $to, $subject, $content, $headers );
 
     if ( $sendSuccess ) {
         ?>
